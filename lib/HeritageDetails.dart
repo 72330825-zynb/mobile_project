@@ -1,46 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'heritage_det_class.dart'; // استدعاء class البيانات
 
-class HeritageDetails extends StatefulWidget {
-  const HeritageDetails({Key? key}) : super(key: key);
+class HeritageDesign extends StatefulWidget {
+  final int heritageId;
+
+  const HeritageDesign({Key? key, required this.heritageId}) : super(key: key);
 
   @override
-  State<HeritageDetails> createState() => _HeritageDetailsState();
+  State<HeritageDesign> createState() => _HeritageDesignState();
 }
 
-class _HeritageDetailsState extends State<HeritageDetails> {
+class _HeritageDesignState extends State<HeritageDesign> {
+  late HeritageData heritageData;
   String activeTab = "story";
 
-  final Map<String, String> contentMap = {
-    "story":
-        "This heritage place has a deep cultural story that reflects history, traditions, and architecture. "
-        "It has been preserved for generations and represents an important cultural landmark.",
-    "cost": "Entry cost:\n\n• Adults: 10 USD\n• Kids: Free",
-    "weather": "☀️ Sunny\n🌡 25°C\n💨 Light wind",
-  };
+  @override
+  void initState() {
+    super.initState();
+    heritageData = HeritageData(heritageId: widget.heritageId);
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    await heritageData.fetch();
+    setState(() {}); // لتحديث الـ UI بعد تحميل البيانات
+  }
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    if (heritageData.isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final contentMap = {
+      "story": heritageData.story,
+      "cost": heritageData.cost,
+      "weather": heritageData.weather,
+    };
 
     return Scaffold(
       body: SingleChildScrollView(
         child: Stack(
-          clipBehavior: Clip.none,
           children: [
-            /// IMAGE
             SizedBox(
               height: 350,
-              width: width,
-              child: const Image(
-                image: NetworkImage(
-                  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-                ),
-                fit: BoxFit.cover,
-              ),
+              width: double.infinity,
+              child: Image.network(heritageData.mainImage, fit: BoxFit.cover),
             ),
-
-            /// BACK BUTTON
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -53,52 +62,24 @@ class _HeritageDetailsState extends State<HeritageDetails> {
                 ),
               ),
             ),
-
-            /// CARD OVER IMAGE
             Container(
               margin: const EdgeInsets.only(top: 300),
               padding: const EdgeInsets.fromLTRB(24, 30, 24, 24),
               decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(30),
-                ),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// TITLE + HEART ICON
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Zainab",
-                        style: GoogleFonts.dmSerifText(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.favorite,
-                            color: Color(0xFF373854),
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    ],
+                  Text(
+                    heritageData.title,
+                    style: GoogleFonts.dmSerifText(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-
                   const SizedBox(height: 25),
-
-                  /// TABS
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -107,10 +88,7 @@ class _HeritageDetailsState extends State<HeritageDetails> {
                       buildTab("Weather"),
                     ],
                   ),
-
                   const SizedBox(height: 30),
-
-                  /// CONTENT
                   Text(
                     contentMap[activeTab] ?? "",
                     style: GoogleFonts.atkinsonHyperlegible(
@@ -118,7 +96,6 @@ class _HeritageDetailsState extends State<HeritageDetails> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 40),
                 ],
               ),
             ),
@@ -128,18 +105,12 @@ class _HeritageDetailsState extends State<HeritageDetails> {
     );
   }
 
-  /// TAB WIDGET
   Widget buildTab(String title) {
     final key = title.toLowerCase();
     final isActive = activeTab == key;
 
     return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        setState(() {
-          activeTab = key;
-        });
-      },
+      onTap: () => setState(() => activeTab = key),
       child: Column(
         children: [
           Text(
@@ -147,7 +118,7 @@ class _HeritageDetailsState extends State<HeritageDetails> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: isActive ? const Color.fromARGB(255, 84, 85, 131) : Colors.black,
+              color: isActive ? const Color(0xFF373854) : Colors.black,
             ),
           ),
           const SizedBox(height: 6),
@@ -165,3 +136,7 @@ class _HeritageDetailsState extends State<HeritageDetails> {
     );
   }
 }
+
+
+
+

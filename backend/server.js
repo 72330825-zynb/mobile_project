@@ -11,8 +11,8 @@ const areasRouter = require("./routes/areas");
 const categoriesRouter = require("./routes/categories");
 const placesRouter = require("./routes/places");
 const destinationRoute = require("./routes/destination");
-const heritageRouter = require("./routes/heritage")
-
+const heritageRouter = require("./routes/heritage");
+const heritageDetailsRouter = require("./routes/heritageDetail");
 
 // server.js
 app.get("/", (req, res) => {
@@ -24,7 +24,7 @@ app.use("/categories", categoriesRouter);
 app.use("/places", placesRouter);
 app.use("/destination" , destinationRoute);
 app.use("/heritage" , heritageRouter);
-
+app.use("/heritageDetail", heritageDetailsRouter);
 
 
 

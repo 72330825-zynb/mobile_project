@@ -1,0 +1,32 @@
+const express = require("express");
+const router = express.Router();
+const { createClient } = require("@supabase/supabase-js");
+
+// إنشاء اتصال Supabase
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+// Endpoint
+router.get("/", async (req, res) => {
+  const { heritage_id, area_id, category_id } = req.query;
+
+  let query = supabase
+    .from("heritage")
+    .select(
+      "Heritage_Id, Heritage_Title, Story, Cost, Weather, Main_Image, area_id, category_id"
+    );
+
+  if (heritage_id) query = query.eq("Heritage_Id", heritage_id);
+  if (area_id) query = query.eq("area_id", area_id);
+  if (category_id) query = query.eq("category_id", category_id);
+
+  const { data, error } = await query;
+
+  if (error) return res.status(500).json({ error: error.message });
+
+  res.json([data]); // نرجع array عشان Flutter متوقع [0]
+});
+
+module.exports = router;
