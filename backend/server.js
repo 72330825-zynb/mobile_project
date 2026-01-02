@@ -12,20 +12,23 @@ const categoriesRouter = require("./routes/categories");
 const placesRouter = require("./routes/places");
 const destinationRouter = require("./routes/destination");
 const heritageRouter = require("./routes/heritage");
-const heritageDetailsRouter = require("./routes/heritageDetail");
 
+
+// Root
 app.get("/", (req, res) => {
   res.send(
     "🚀 Mobile Project API is running! Use /items, /places, /heritage, /destination"
   );
 });
 
+// Use Routes
 app.use("/items", areasRouter);
 app.use("/categories", categoriesRouter);
 app.use("/places", placesRouter);
 app.use("/destination", destinationRouter);
 app.use("/heritage", heritageRouter);
-app.use("/heritageDetail", heritageDetailsRouter);
 
+
+// Start Server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

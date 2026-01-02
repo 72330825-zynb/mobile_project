@@ -12,7 +12,7 @@ import 'heritage.dart';
 import 'heritage_card.dart';
 import 'destination.dart';
 import 'HeritageDetails.dart';
-import 'heritage_det_class.dart';
+
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -238,9 +238,7 @@ class _MainPageState extends State<MainPage> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  HeritageDesign(
-                                                    heritageId:
-                                                        h.id, // <-- هاد مهم
+                                                  HeritageDetails( // <-- هاد مهم
                                                   ),
                                             ),
                                           );

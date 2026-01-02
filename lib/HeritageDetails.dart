@@ -1,57 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'heritage_det_class.dart';
 
-class HeritageDesign extends StatefulWidget {
-  final int heritageId;
-  const HeritageDesign({Key? key, required this.heritageId}) : super(key: key);
+class HeritageDetails extends StatefulWidget {
+  const HeritageDetails({Key? key}) : super(key: key);
 
   @override
-  State<HeritageDesign> createState() => _HeritageDesignState();
+  State<HeritageDetails> createState() => _HeritageDetailsState();
 }
 
-class _HeritageDesignState extends State<HeritageDesign> {
-  late HeritageData heritageData;
+class _HeritageDetailsState extends State<HeritageDetails> {
   String activeTab = "story";
 
-  @override
-  void initState() {
-    super.initState();
-    heritageData = HeritageData(heritageId: widget.heritageId);
-    loadData();
-  }
-
-  Future<void> loadData() async {
-    await heritageData.fetch();
-    setState(() {}); // لتحديث UI
-  }
+  final Map<String, String> contentMap = {
+    "story":
+        "This heritage place has a deep cultural story that reflects history, traditions, and architecture. "
+        "It has been preserved for generations and represents an important cultural landmark.",
+    "cost": "Entry cost:\n\n• Adults: 10 USD\n• Kids: Free",
+    "weather": "☀️ Sunny\n🌡 25°C\n💨 Light wind",
+  };
 
   @override
   Widget build(BuildContext context) {
-    if (heritageData.isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    final contentMap = {
-      "story": heritageData.story,
-      "cost": heritageData.cost,
-      "weather": heritageData.weather,
-    };
+    final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: SingleChildScrollView(
         child: Stack(
+          clipBehavior: Clip.none,
           children: [
-            // Image
+            /// IMAGE
             SizedBox(
               height: 350,
-              width: double.infinity,
-              child: Image.network(heritageData.mainImage, fit: BoxFit.cover),
+              width: width,
+              child: const Image(
+                image: NetworkImage(
+                  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
+                ),
+                fit: BoxFit.cover,
+              ),
             ),
 
-            // Back button
+            /// BACK BUTTON
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -65,23 +54,25 @@ class _HeritageDesignState extends State<HeritageDesign> {
               ),
             ),
 
-            // Card
+            /// CARD OVER IMAGE
             Container(
               margin: const EdgeInsets.only(top: 300),
               padding: const EdgeInsets.fromLTRB(24, 30, 24, 24),
               decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(30),
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title
+                  /// TITLE + HEART ICON
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        heritageData.title,
+                        "Zainab",
                         style: GoogleFonts.dmSerifText(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -104,9 +95,10 @@ class _HeritageDesignState extends State<HeritageDesign> {
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 25),
 
-                  // Tabs
+                  /// TABS
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -115,9 +107,10 @@ class _HeritageDesignState extends State<HeritageDesign> {
                       buildTab("Weather"),
                     ],
                   ),
+
                   const SizedBox(height: 30),
 
-                  // Content
+                  /// CONTENT
                   Text(
                     contentMap[activeTab] ?? "",
                     style: GoogleFonts.atkinsonHyperlegible(
@@ -125,6 +118,7 @@ class _HeritageDesignState extends State<HeritageDesign> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
@@ -134,12 +128,18 @@ class _HeritageDesignState extends State<HeritageDesign> {
     );
   }
 
+  /// TAB WIDGET
   Widget buildTab(String title) {
     final key = title.toLowerCase();
     final isActive = activeTab == key;
 
     return GestureDetector(
-      onTap: () => setState(() => activeTab = key),
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        setState(() {
+          activeTab = key;
+        });
+      },
       child: Column(
         children: [
           Text(
@@ -147,7 +147,7 @@ class _HeritageDesignState extends State<HeritageDesign> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: isActive ? const Color(0xFF373854) : Colors.black,
+              color: isActive ? const Color.fromARGB(255, 84, 85, 131) : Colors.black,
             ),
           ),
           const SizedBox(height: 6),
