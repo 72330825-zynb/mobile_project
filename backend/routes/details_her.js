@@ -1,7 +1,13 @@
-import express from "express";
-import supabase from "../supabaseClient.js";
-
+const express = require("express");
 const router = express.Router();
+const { createClient } = require("@supabase/supabase-js");
+
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
 
 // GET heritage details by id
 router.get("/:id", async (req, res) => {
@@ -29,4 +35,4 @@ router.get("/:id", async (req, res) => {
   res.json(data);
 });
 
-export default router;
+module.exports = router;
