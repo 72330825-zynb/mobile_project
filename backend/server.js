@@ -12,7 +12,7 @@ const categoriesRouter = require("./routes/categories");
 const placesRouter = require("./routes/places");
 const destinationRouter = require("./routes/destination");
 const heritageRouter = require("./routes/heritage");
-
+const heritageDetailsRouter = require("./routes/details_her");
 
 // Root
 app.get("/", (req, res) => {
@@ -27,7 +27,7 @@ app.use("/categories", categoriesRouter);
 app.use("/places", placesRouter);
 app.use("/destination", destinationRouter);
 app.use("/heritage", heritageRouter);
-
+app.use("/details_her" , heritageDetailsRouter);
 
 // Start Server
 const PORT = process.env.PORT || 3000;
