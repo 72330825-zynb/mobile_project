@@ -14,7 +14,7 @@ class HeritageData {
 
   HeritageData({required this.heritageId});
 
-  /// جلب البيانات من الـ API
+  /// Fetch data from API
   Future<void> fetch() async {
     isLoading = true;
     try {
@@ -23,7 +23,7 @@ class HeritageData {
       );
 
       if (res.statusCode == 200) {
-        final data = jsonDecode(res.body)[0];
+        final data = jsonDecode(res.body)[0]; // array من backend
         title = data['Heritage_Title'] ?? '';
         story = data['Story'] ?? '';
         cost = data['Cost'] ?? '';

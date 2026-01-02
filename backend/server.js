@@ -10,23 +10,22 @@ app.use(express.json());
 const areasRouter = require("./routes/areas");
 const categoriesRouter = require("./routes/categories");
 const placesRouter = require("./routes/places");
-const destinationRoute = require("./routes/destination");
+const destinationRouter = require("./routes/destination");
 const heritageRouter = require("./routes/heritage");
 const heritageDetailsRouter = require("./routes/heritageDetail");
 
-// server.js
 app.get("/", (req, res) => {
-  res.send("🚀 Mobile Project API is running! Use /items, /places, /heritage, /destination");
+  res.send(
+    "🚀 Mobile Project API is running! Use /items, /places, /heritage, /destination"
+  );
 });
 
 app.use("/items", areasRouter);
 app.use("/categories", categoriesRouter);
 app.use("/places", placesRouter);
-app.use("/destination" , destinationRoute);
-app.use("/heritage" , heritageRouter);
+app.use("/destination", destinationRouter);
+app.use("/heritage", heritageRouter);
 app.use("/heritageDetail", heritageDetailsRouter);
-
-
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

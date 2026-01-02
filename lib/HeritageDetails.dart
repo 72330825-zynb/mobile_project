@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'heritage_det_class.dart'; // استدعاء class البيانات
+import 'heritage_det_class.dart';
 
 class HeritageDesign extends StatefulWidget {
   final int heritageId;
-
   const HeritageDesign({Key? key, required this.heritageId}) : super(key: key);
 
   @override
@@ -24,7 +23,7 @@ class _HeritageDesignState extends State<HeritageDesign> {
 
   Future<void> loadData() async {
     await heritageData.fetch();
-    setState(() {}); // لتحديث الـ UI بعد تحميل البيانات
+    setState(() {}); // لتحديث UI
   }
 
   @override
@@ -45,11 +44,14 @@ class _HeritageDesignState extends State<HeritageDesign> {
       body: SingleChildScrollView(
         child: Stack(
           children: [
+            // Image
             SizedBox(
               height: 350,
               width: double.infinity,
               child: Image.network(heritageData.mainImage, fit: BoxFit.cover),
             ),
+
+            // Back button
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -62,6 +64,8 @@ class _HeritageDesignState extends State<HeritageDesign> {
                 ),
               ),
             ),
+
+            // Card
             Container(
               margin: const EdgeInsets.only(top: 300),
               padding: const EdgeInsets.fromLTRB(24, 30, 24, 24),
@@ -72,14 +76,37 @@ class _HeritageDesignState extends State<HeritageDesign> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    heritageData.title,
-                    style: GoogleFonts.dmSerifText(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  // Title
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        heritageData.title,
+                        style: GoogleFonts.dmSerifText(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.favorite,
+                            color: Color(0xFF373854),
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 25),
+
+                  // Tabs
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -89,6 +116,8 @@ class _HeritageDesignState extends State<HeritageDesign> {
                     ],
                   ),
                   const SizedBox(height: 30),
+
+                  // Content
                   Text(
                     contentMap[activeTab] ?? "",
                     style: GoogleFonts.atkinsonHyperlegible(
