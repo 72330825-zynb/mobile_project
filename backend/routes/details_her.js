@@ -17,7 +17,7 @@ router.get("/:id", async (req, res) => {
     .from("heritage")
     .select(
       `
-      Heritage_id,
+      Heritage_Id,
       Heritage_Title,
       Story,
       Cost,
