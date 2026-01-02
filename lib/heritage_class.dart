@@ -17,7 +17,7 @@ class HeritageDetailsModel {
 
   factory HeritageDetailsModel.fromMap(Map<String, dynamic> map) {
     return HeritageDetailsModel(
-      id: map['Heritage_id'],
+      id: map['Heritage_Id'],
       title: map['Heritage_Title'],
       story: map['Story'],
       cost: map['Cost'],

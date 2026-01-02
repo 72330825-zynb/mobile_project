@@ -25,7 +25,7 @@ router.get("/:id", async (req, res) => {
       Main_Image
       `
     )
-    .eq("Heritage_id", id)
+    .eq("Heritage_Id", id)
     .single();
 
   if (error) {
