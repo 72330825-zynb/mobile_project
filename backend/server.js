@@ -14,10 +14,19 @@ const destinationRoute = require("./routes/destination");
 const heritageRouter = require("./routes/heritage")
 
 
+// server.js
+app.get("/test", (req, res) => {
+  res.send("🚀 Mobile Project API is running! Use /items, /places, /heritage, /destination");
+});
+
 app.use("/items", areasRouter);
 app.use("/categories", categoriesRouter);
 app.use("/places", placesRouter);
 app.use("/destination" , destinationRoute);
 app.use("/heritage" , heritageRouter);
 
-app.listen(3000, () => console.log("🚀 Server running on port 3000"));
+
+
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

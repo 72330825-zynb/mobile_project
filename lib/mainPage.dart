@@ -39,6 +39,8 @@ class _MainPageState extends State<MainPage> {
   List<DestinationModel> featuredDestinations = [];
   bool loadingDestination = false;
 
+  final String baseUrl = 'https://mobile-project-2.onrender.com';
+
   @override
   void initState() {
     super.initState();
@@ -50,7 +52,7 @@ class _MainPageState extends State<MainPage> {
   Future<void> loadAreas() async {
     try {
       final res = await http.get(
-        Uri.parse('http://192.168.1.108:3000/items'),
+        Uri.parse('$baseUrl/items'),
       );
 
       if (res.statusCode == 200) {
@@ -72,7 +74,7 @@ class _MainPageState extends State<MainPage> {
     setState(() => loadingPlaces = true);
 
     final uri = Uri.parse(
-      'http://192.168.1.108:3000/places'
+      '$baseUrl/places'
       '?area_id=${selectedArea!.id}'
       '&category_id=${selectedCategory!.id}',
     );
@@ -101,7 +103,7 @@ class _MainPageState extends State<MainPage> {
     setState(() => loadingHeritage = true);
 
     final uri = Uri.parse(
-      'http://192.168.1.108:3000/heritage'
+      '$baseUrl/heritage'
       '?area_id=${selectedArea!.id}'
       '&category_id=${selectedCategory!.id}',
     );
@@ -130,7 +132,7 @@ class _MainPageState extends State<MainPage> {
 
     try {
       final res = await http.get(
-        Uri.parse('http://192.168.1.108:3000/destination'),
+        Uri.parse('$baseUrl/destination'),
       );
 
       if (res.statusCode == 200) {
@@ -183,7 +185,6 @@ class _MainPageState extends State<MainPage> {
                   },
                 ),
 
-                // فقط مسافة صغيرة
                 const SizedBox(height: 8),
 
                 // CATEGORY ROW
@@ -195,7 +196,7 @@ class _MainPageState extends State<MainPage> {
                   },
                 ),
 
-                const SizedBox(height: 8), // فراغ صغير فقط
+                const SizedBox(height: 8),
 
                 // PLACES SECTION
                 loadingPlaces
@@ -212,7 +213,7 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
 
-                const SizedBox(height: 20), // فراغ بسيط قبل الهيريتج
+                const SizedBox(height: 20),
 
                 // HERITAGE SECTION
                 loadingHeritage
@@ -222,7 +223,6 @@ class _MainPageState extends State<MainPage> {
                         : Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
- // فراغ صغير فقط
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
