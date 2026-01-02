@@ -17,6 +17,9 @@ class _CategorySelectorState extends State<CategorySelector> {
   int selectedIndex = 0;
   bool loading = true;
 
+  // 🔹 هنا حطينا الـ base URL للأونلاين
+  final String baseUrl = 'https://mobile-project-1-ab63.onrender.com';
+
   @override
   void initState() {
     super.initState();
@@ -26,7 +29,7 @@ class _CategorySelectorState extends State<CategorySelector> {
   Future<void> loadCategories() async {
     try {
       final res = await http.get(
-        Uri.parse('http://192.168.1.108:3000/categories'),
+        Uri.parse('$baseUrl/categories'), // 🔹 الرابط صار أونلاين
       );
 
       if (res.statusCode == 200) {

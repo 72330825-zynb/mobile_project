@@ -39,7 +39,7 @@ class _MainPageState extends State<MainPage> {
   List<DestinationModel> featuredDestinations = [];
   bool loadingDestination = false;
 
-  final String baseUrl = 'https://mobile-project-2.onrender.com';
+  final String baseUrl = 'https://mobile-project-1-ab63.onrender.com';
 
   @override
   void initState() {

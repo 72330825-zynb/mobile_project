@@ -15,7 +15,7 @@ const heritageRouter = require("./routes/heritage")
 
 
 // server.js
-app.get("/test", (req, res) => {
+app.get("/", (req, res) => {
   res.send("🚀 Mobile Project API is running! Use /items, /places, /heritage, /destination");
 });
 
