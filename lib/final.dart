@@ -27,19 +27,21 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
     loadPlace();
   }
 
-  Future<void> loadPlace() async {
-    final res =
-        await http.get(Uri.parse("$baseUrl/place_details/${widget.placeId}"));
+Future<void> loadPlace() async {
+  final res = await http.get(
+    Uri.parse("$baseUrl/final/${widget.placeId}"),
+  );
 
-    if (res.statusCode == 200) {
-      setState(() {
-        place = PlaceDetailsModel.fromMap(jsonDecode(res.body));
-        loading = false;
-      });
-    } else {
+  if (res.statusCode == 200) {
+    setState(() {
+      place = PlaceDetailsModel.fromMap(jsonDecode(res.body));
       loading = false;
-    }
+    });
+  } else {
+    loading = false;
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
