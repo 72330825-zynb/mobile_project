@@ -7,27 +7,30 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-
-
-
-
-
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   const { id } = req.params;
 
-  const sql = "SELECT * FROM places WHERE Place_Id = ?";
-  db.query(sql, [id], (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json(err);
+  try {
+    const { data, error } = await supabase
+      .from("places")
+      .select("*")
+      .eq("Place_Id", id)
+      .single();
+
+    if (error) {
+      console.error(error);
+      return res.status(500).json(error);
     }
 
-    if (result.length === 0) {
+    if (!data) {
       return res.status(404).json({ message: "Place not found" });
     }
 
-    res.json(result[0]);
-  });
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
 });
 
 module.exports = router;
