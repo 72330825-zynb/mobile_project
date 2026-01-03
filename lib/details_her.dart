@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'heritage_class.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailsHerPage extends StatefulWidget {
   final int heritageId;

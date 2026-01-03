@@ -7,13 +7,11 @@ import 'category.dart';
 import 'place.dart';
 import 'destination_model.dart';
 import 'heritage.dart';
-
 import 'dropdown.dart';
 import 'row_category.dart';
 import 'section.dart';
 import 'heritage_card.dart';
 import 'destination.dart';
-
 import 'details_her.dart';
 import 'final.dart'; // PlaceDetailPage
 
@@ -57,7 +55,6 @@ class _MainPageState extends State<MainPage> {
   Future<void> loadAreas() async {
     try {
       final res = await http.get(Uri.parse('$baseUrl/items'));
-
       if (res.statusCode == 200) {
         final List data = jsonDecode(res.body);
         setState(() {
@@ -77,9 +74,7 @@ class _MainPageState extends State<MainPage> {
     setState(() => loadingPlaces = true);
 
     final uri = Uri.parse(
-      '$baseUrl/places'
-      '?area_id=${selectedArea!.id}'
-      '&category_id=${selectedCategory!.id}',
+      '$baseUrl/places?area_id=${selectedArea!.id}&category_id=${selectedCategory!.id}',
     );
 
     try {
@@ -106,9 +101,7 @@ class _MainPageState extends State<MainPage> {
     setState(() => loadingHeritage = true);
 
     final uri = Uri.parse(
-      '$baseUrl/heritage'
-      '?area_id=${selectedArea!.id}'
-      '&category_id=${selectedCategory!.id}',
+      '$baseUrl/heritage?area_id=${selectedArea!.id}&category_id=${selectedCategory!.id}',
     );
 
     try {
@@ -116,8 +109,7 @@ class _MainPageState extends State<MainPage> {
       if (res.statusCode == 200) {
         final List data = jsonDecode(res.body);
         setState(() {
-          heritages =
-              data.map((e) => HeritageModel.fromMap(e)).toList();
+          heritages = data.map((e) => HeritageModel.fromMap(e)).toList();
           loadingHeritage = false;
         });
       } else {
@@ -135,7 +127,6 @@ class _MainPageState extends State<MainPage> {
 
     try {
       final res = await http.get(Uri.parse('$baseUrl/destination'));
-
       if (res.statusCode == 200) {
         final List data = jsonDecode(res.body);
         setState(() {
@@ -152,7 +143,7 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  // ===================== UI =====================
+  // ===================== BUILD UI =====================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,7 +165,7 @@ class _MainPageState extends State<MainPage> {
                 ),
                 const SizedBox(height: 16),
 
-                // AREA DROPDOWN
+                // ===================== AREA DROPDOWN =====================
                 AreaDropdown(
                   areas: areas,
                   selectedArea: selectedArea,
@@ -184,10 +175,9 @@ class _MainPageState extends State<MainPage> {
                     loadHeritage();
                   },
                 ),
-
                 const SizedBox(height: 8),
 
-                // CATEGORY ROW
+                // ===================== CATEGORY ROW =====================
                 CategorySelector(
                   onSelectCategory: (cat) {
                     setState(() => selectedCategory = cat);
@@ -195,7 +185,6 @@ class _MainPageState extends State<MainPage> {
                     loadHeritage();
                   },
                 ),
-
                 const SizedBox(height: 16),
 
                 // ===================== PLACES =====================
@@ -216,15 +205,13 @@ class _MainPageState extends State<MainPage> {
                                 );
                               },
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 10),
+                                padding: const EdgeInsets.only(right: 10),
                                 child: PlaceCard(place: p),
                               ),
                             );
                           }).toList(),
                         ),
                       ),
-
                 const SizedBox(height: 25),
 
                 // ===================== HERITAGE =====================
@@ -233,8 +220,7 @@ class _MainPageState extends State<MainPage> {
                     : heritages.isEmpty
                         ? const SizedBox()
                         : Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
                                 'Heritage',
@@ -262,10 +248,8 @@ class _MainPageState extends State<MainPage> {
                                       },
                                       child: Padding(
                                         padding:
-                                            const EdgeInsets.only(
-                                                right: 10),
-                                        child: HeritageCard(
-                                            heritage: h),
+                                            const EdgeInsets.only(right: 10),
+                                        child: HeritageCard(heritage: h),
                                       ),
                                     );
                                   }).toList(),
@@ -273,7 +257,6 @@ class _MainPageState extends State<MainPage> {
                               ),
                             ],
                           ),
-
                 const SizedBox(height: 35),
 
                 // ===================== FEATURED DESTINATIONS =====================
@@ -282,8 +265,7 @@ class _MainPageState extends State<MainPage> {
                     : featuredDestinations.isEmpty
                         ? const SizedBox()
                         : Column(
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
                                 'Featured Destination',
@@ -297,11 +279,9 @@ class _MainPageState extends State<MainPage> {
                                 children: featuredDestinations
                                     .map(
                                       (d) => Padding(
-                                        padding:
-                                            const EdgeInsets.only(
-                                                bottom: 16),
-                                        child:
-                                            FeaturedDestinationCard(
+                                        padding: const EdgeInsets.only(
+                                            bottom: 16),
+                                        child: FeaturedDestinationCard(
                                           destination: d,
                                         ),
                                       ),
@@ -318,4 +298,5 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
+
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'final_class.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PlaceDetailPage extends StatefulWidget {
   final int placeId;
@@ -18,8 +19,8 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
   bool loading = true;
 
   final String baseUrl = "https://mobile-project-1-ab63.onrender.com";
-  final String supabaseUrl =
-      "https://vetdooxhwfezufdzzean.supabase.co/storage/v1/object/public/places/";
+  final String supabaseBaseUrl =
+      "https://vetdooxhwfezufdzzean.supabase.co/storage/v1/object/public/places_images";
 
   @override
   void initState() {
@@ -27,21 +28,36 @@ class _PlaceDetailPageState extends State<PlaceDetailPage> {
     loadPlace();
   }
 
-Future<void> loadPlace() async {
-  final res = await http.get(
-    Uri.parse("$baseUrl/final/${widget.placeId}"),
-  );
+  // ================= LOAD PLACE =================
+  Future<void> loadPlace() async {
+    try {
+      final res =
+          await http.get(Uri.parse("$baseUrl/final/${widget.placeId}"));
 
-  if (res.statusCode == 200) {
-    setState(() {
-      place = PlaceDetailsModel.fromMap(jsonDecode(res.body));
+      if (res.statusCode == 200) {
+        setState(() {
+          place = PlaceDetailsModel.fromMap(jsonDecode(res.body));
+          loading = false;
+        });
+      } else {
+        loading = false;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
       loading = false;
-    });
-  } else {
-    loading = false;
+    }
   }
-}
 
+  // ================= OPEN MENU LINK =================
+  Future<void> openMenuLink(String url) async {
+    final uri = Uri.parse(url);
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      debugPrint("Could not launch $url");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +66,6 @@ Future<void> loadPlace() async {
         body: Center(child: CircularProgressIndicator()),
       );
     }
-
-    final imageUrl = "$supabaseUrl${place!.image}";
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -71,17 +85,25 @@ Future<void> loadPlace() async {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // ================= IMAGE =================
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.network(
-                      imageUrl,
+                      '$supabaseBaseUrl/${place!.image}',
                       height: 180,
                       width: double.infinity,
                       fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        height: 180,
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.broken_image, size: 50),
+                      ),
                     ),
                   ),
+
                   const SizedBox(height: 12),
 
+                  // ================= TITLE =================
                   Text(
                     place!.title,
                     style: GoogleFonts.dmSerifText(
@@ -92,6 +114,7 @@ Future<void> loadPlace() async {
 
                   const SizedBox(height: 8),
 
+                  // ================= RATING + FAVORITE =================
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -99,11 +122,11 @@ Future<void> loadPlace() async {
                         children: List.generate(
                           5,
                           (index) => Icon(
-                            Icons.star,
+                            index < place!.rating.round()
+                                ? Icons.star
+                                : Icons.star_border,
+                            color: Colors.amber,
                             size: 20,
-                            color: index < place!.rating
-                                ? Colors.amber
-                                : Colors.grey,
                           ),
                         ),
                       ),
@@ -111,13 +134,14 @@ Future<void> loadPlace() async {
                         place!.favorite
                             ? Icons.favorite
                             : Icons.favorite_border,
-                        color: Colors.red,
+                        color: const Color(0xFF373854),
                       )
                     ],
                   ),
 
                   const SizedBox(height: 16),
 
+                  // ================= COMMENT + MENU =================
                   Row(
                     children: [
                       Expanded(
@@ -126,6 +150,7 @@ Future<void> loadPlace() async {
                             prefixIcon: const Icon(Icons.comment),
                             hintText: 'Comment',
                             filled: true,
+                            fillColor: Colors.white,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
@@ -134,18 +159,25 @@ Future<void> loadPlace() async {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 14, horizontal: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.deepPurple,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Text(
-                          "Menu",
-                          style: TextStyle(
+
+                      GestureDetector(
+                        onTap: () {
+                          openMenuLink(place!.menu);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 14, horizontal: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.deepPurple,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Text(
+                            "Menu",
+                            style: TextStyle(
                               color: Colors.white,
-                              fontWeight: FontWeight.bold),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                     ],
