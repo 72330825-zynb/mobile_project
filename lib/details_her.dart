@@ -18,8 +18,7 @@ class _DetailsHerPageState extends State<DetailsHerPage> {
   HeritageDetailsModel? heritage;
   bool loading = true;
 
-  final String baseUrl = "https://mobile-project-1-ab63.onrender.com";
-
+  final String baseUrl = "https://mobile-project-1-ab63.onrender.com"; 
   @override
   void initState() {
     super.initState();
@@ -27,27 +26,44 @@ class _DetailsHerPageState extends State<DetailsHerPage> {
   }
 
   Future<void> loadDetails() async {
-    final res = await http.get(
-      Uri.parse("$baseUrl/heritage-details/${widget.heritageId}"),
-    );
+    try {
+      final res = await http.get(
+        Uri.parse("$baseUrl/details_her/${widget.heritageId}"),
+      );
 
-    if (res.statusCode == 200) {
-      setState(() {
-        heritage =
-            HeritageDetailsModel.fromMap(jsonDecode(res.body));
-        loading = false;
-      });
+      if (res.statusCode == 200) {
+        setState(() {
+          heritage = HeritageDetailsModel.fromMap(jsonDecode(res.body));
+          loading = false;
+        });
+
+        // 🔹 debugPrint للرابط
+        debugPrint('IMAGE FROM SERVER: ${heritage!.image}');
+      } else {
+        debugPrint('Failed to load heritage details: ${res.statusCode}');
+        setState(() => loading = false);
+      }
+    } catch (e) {
+      debugPrint('Error fetching heritage details: $e');
+      setState(() => loading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+
+
+       final supabaseBaseUrl =
+        'https://vetdooxhwfezufdzzean.supabase.co/storage/v1/object/public/places_images';
+
+
     if (loading || heritage == null) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
     }
 
+   
     final contentMap = {
       "story": heritage!.story,
       "cost": heritage!.cost,
@@ -62,8 +78,20 @@ class _DetailsHerPageState extends State<DetailsHerPage> {
               height: 350,
               width: double.infinity,
               child: Image.network(
-                heritage!.image,
-                fit: BoxFit.cover,
+              '$supabaseBaseUrl/${heritage!.image}',
+              width: double.infinity,
+              height: 120, // نفس ارتفاع الصورة في PlaceCard
+              fit: BoxFit.cover,
+            
+                errorBuilder: (context, error, stackTrace) {
+                  debugPrint('IMAGE LOAD ERROR: $error');
+                  return Container(
+                    color: Colors.grey[300],
+                    child: const Center(
+                      child: Icon(Icons.broken_image, size: 50),
+                    ),
+                  );
+                },
               ),
             ),
 
@@ -115,7 +143,7 @@ class _DetailsHerPageState extends State<DetailsHerPage> {
                   Text(
                     contentMap[activeTab] ?? "",
                     style: GoogleFonts.atkinsonHyperlegible(
-                      fontSize: 18,
+                      fontSize: 26,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

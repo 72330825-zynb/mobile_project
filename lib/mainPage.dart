@@ -1,17 +1,21 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'destination_model.dart';
+
 import 'area.dart';
 import 'category.dart';
 import 'place.dart';
+import 'destination_model.dart';
+import 'heritage.dart';
+
 import 'dropdown.dart';
 import 'row_category.dart';
 import 'section.dart';
-import 'heritage.dart';
 import 'heritage_card.dart';
 import 'destination.dart';
+
 import 'details_her.dart';
+import 'final.dart'; // PlaceDetailPage
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -112,9 +116,8 @@ class _MainPageState extends State<MainPage> {
       if (res.statusCode == 200) {
         final List data = jsonDecode(res.body);
         setState(() {
-          heritages = data
-              .map<HeritageModel>((e) => HeritageModel.fromMap(e))
-              .toList();
+          heritages =
+              data.map((e) => HeritageModel.fromMap(e)).toList();
           loadingHeritage = false;
         });
       } else {
@@ -136,9 +139,8 @@ class _MainPageState extends State<MainPage> {
       if (res.statusCode == 200) {
         final List data = jsonDecode(res.body);
         setState(() {
-          featuredDestinations = data
-              .map<DestinationModel>((e) => DestinationModel.fromMap(e))
-              .toList();
+          featuredDestinations =
+              data.map((e) => DestinationModel.fromMap(e)).toList();
           loadingDestination = false;
         });
       } else {
@@ -168,7 +170,6 @@ class _MainPageState extends State<MainPage> {
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -195,107 +196,120 @@ class _MainPageState extends State<MainPage> {
                   },
                 ),
 
-                const SizedBox(height: 8),
+                const SizedBox(height: 16),
 
-                // PLACES SECTION
+                // ===================== PLACES =====================
                 loadingPlaces
                     ? const Center(child: CircularProgressIndicator())
                     : SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          children: places
-                              .map(
-                                (p) => Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: PlaceCard(place: p),
-                                ),
-                              )
-                              .toList(),
+                          children: places.map((p) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        PlaceDetailPage(placeId: p.id),
+                                  ),
+                                );
+                              },
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 10),
+                                child: PlaceCard(place: p),
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 25),
 
-
-
-                // HERITAGE SECTION
-         // ================= HERITAGE SECTION =================
-loadingHeritage
-    ? const Center(child: CircularProgressIndicator())
-    : heritages.isEmpty
-        ? const SizedBox()
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Heritage',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: heritages
-                      .map((h) => GestureDetector(
-                            onTap: () {
-                              // لما يضغط على أي بطاقة Heritage
-                           Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (_) => DetailsHerPage(
-      heritageId: h.id,
-    ),
-  ),
-);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: HeritageCard(heritage: h),
-                            ),
-                          ))
-                      .toList(),
-                ),
-              ),
-            ],
-          ),
-
+                // ===================== HERITAGE =====================
+                loadingHeritage
+                    ? const Center(child: CircularProgressIndicator())
+                    : heritages.isEmpty
+                        ? const SizedBox()
+                        : Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Heritage',
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: heritages.map((h) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                DetailsHerPage(
+                                              heritageId: h.id,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(
+                                                right: 10),
+                                        child: HeritageCard(
+                                            heritage: h),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ],
+                          ),
 
                 const SizedBox(height: 35),
 
-                // FEATURED DESTINATIONS
+                // ===================== FEATURED DESTINATIONS =====================
                 loadingDestination
                     ? const Center(child: CircularProgressIndicator())
                     : featuredDestinations.isEmpty
-                    ? const SizedBox()
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Featured Destination',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
+                        ? const SizedBox()
+                        : Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Featured Destination',
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Column(
+                                children: featuredDestinations
+                                    .map(
+                                      (d) => Padding(
+                                        padding:
+                                            const EdgeInsets.only(
+                                                bottom: 16),
+                                        child:
+                                            FeaturedDestinationCard(
+                                          destination: d,
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 16),
-                          Column(
-                            children: featuredDestinations
-                                .map(
-                                  (d) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 16),
-                                    child: FeaturedDestinationCard(
-                                      destination: d,
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                          ),
-                        ],
-                      ),
               ],
             ),
           ),
@@ -304,3 +318,4 @@ loadingHeritage
     );
   }
 }
+
