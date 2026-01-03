@@ -13,6 +13,7 @@ const placesRouter = require("./routes/places");
 const destinationRouter = require("./routes/destination");
 const heritageRouter = require("./routes/heritage");
 const heritageDetailsRouter = require("./routes/details_her");
+const finalRoute = require("./routes/final");
 
 // Root
 app.get("/", (req, res) => {
@@ -28,6 +29,7 @@ app.use("/places", placesRouter);
 app.use("/destination", destinationRouter);
 app.use("/heritage", heritageRouter);
 app.use("/details_her" , heritageDetailsRouter);
+app.use("/final" , finalRoute);
 
 // Start Server
 const PORT = process.env.PORT || 3000;
