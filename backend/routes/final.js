@@ -1,6 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../connection");
+const { createClient } = require("@supabase/supabase-js");
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+
+
+
+
 
 router.get("/:id", (req, res) => {
   const { id } = req.params;
