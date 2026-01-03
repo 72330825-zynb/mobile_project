@@ -7,6 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+const loginRoute = require("./routes/login")
 const areasRouter = require("./routes/areas");
 const categoriesRouter = require("./routes/categories");
 const placesRouter = require("./routes/places");
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
 });
 
 // Use Routes
+app.use("/items" , loginRoute);
 app.use("/items", areasRouter);
 app.use("/categories", categoriesRouter);
 app.use("/places", placesRouter);
