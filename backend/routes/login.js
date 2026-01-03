@@ -7,48 +7,32 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// POST /login
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   const { name, password } = req.body;
 
   if (!name || !password) {
-    return res.status(400).json({
-      success: false,
-      message: 'Missing name or password',
-    });
+    return res.status(400).json({ message: "Missing data" });
   }
 
-  try {
-    // نستعلم عن الuser بالname و password
-    const { data, error } = await supabase
-      .from('users')   // table اسمها users
-      .select('*')
-      .eq('name', name)
-      .eq('password', password);
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("name", name)
+    .eq("password", password);
 
-    if (error) throw error;
+  if (error) return res.status(500).json(error);
 
-    if (data.length > 0) {
-      res.json({
-        success: true,
-        user: {
-          id: data[0].id,
-          name: data[0].name,
-        },
-      });
-    } else {
-      res.status(401).json({
-        success: false,
-        message: 'Invalid name or password',
-      });
-    }
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: 'Supabase error',
-      error: err.message,
-    });
+  if (data.length === 0) {
+    return res.status(401).json({ message: "Invalid credentials" });
   }
+
+  res.json({
+    success: true,
+    user: {
+      id: data[0].id,
+      name: data[0].name,
+    },
+  });
 });
 
 module.exports = router;
