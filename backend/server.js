@@ -1,8 +1,8 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
-
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
@@ -22,6 +22,14 @@ app.get("/", (req, res) => {
     "🚀 Mobile Project API is running! Use /items, /places, /heritage, /destination"
   );
 });
+
+router.post("/", (req, res) => {
+  console.log("BODY:", req.body);
+  res.json({ ok: true });
+});
+
+
+
 
 // Use Routes
 app.use("/login" , loginRoute);
