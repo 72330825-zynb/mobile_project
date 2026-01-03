@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 });
 
 // Use Routes
-app.use("/items" , loginRoute);
+app.use("/login" , loginRoute);
 app.use("/items", areasRouter);
 app.use("/categories", categoriesRouter);
 app.use("/places", placesRouter);
